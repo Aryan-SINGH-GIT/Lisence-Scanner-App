@@ -1,0 +1,46 @@
+{% extends 'scanner/base.html' %}
+{% load static %}
+{% block title %}Upload | License Scanner{% endblock %}
+{% block content %}
+  <section class="card">
+    <h2>Upload Source Archive</h2>
+    <form method="post" enctype="multipart/form-data" class="upload-form">
+      {% csrf_token %}
+      <div class="form-row">
+        {{ form.file.label_tag }}
+        {{ form.file }}
+        <small class="help">{{ form.file.help_text }}</small>
+        {% if form.file.errors %}<div class="error">{{ form.file.errors }}</div>{% endif %}
+      </div>
+      <button type="submit" class="btn primary">Upload & Scan</button>
+    </form>
+  </section>
+
+  {% if recent_uploads %}
+  <section class="card">
+    <h3>Recent Uploads</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>File</th>
+          <th>Status</th>
+          <th>Files Scanned</th>
+          <th>When</th>
+          <th>Report</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in recent_uploads %}
+          <tr>
+            <td>{{ u.original_filename }} ({{ u.file_size_mb }} MB)</td>
+            <td>{{ u.status }}</td>
+            <td>{{ u.total_files_scanned }}</td>
+            <td>{{ u.upload_date|date:'Y-m-d H:i' }}</td>
+            <td><a class="btn" href="{% url 'scanner:report' u.id %}">View</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+  {% endif %}
+{% endblock %}

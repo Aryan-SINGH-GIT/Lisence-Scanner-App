@@ -1,0 +1,103 @@
+﻿{% extends 'scanner/base.html' %}
+{% load static %}
+{% block title %}Report | License Scanner{% endblock %}
+{% block content %}
+  <section class="card">
+    <div class="report-header">
+      <div>
+        <h2>Report for {{ upload.original_filename }}</h2>
+        <p>Status: <strong id="status">{{ upload.status }}</strong>  Files: {{ total_files }}  High confidence: {{ high_confidence }}  Unknown: {{ unknown_licenses }}</p>
+        <p>Processing time: {% if upload.processing_time %}{{ upload.processing_time|floatformat:1 }}s{% else %}—{% endif %}</p>
+      </div>
+      <div class="actions">
+        <a class="btn" href="{% url 'scanner:download_report' upload.id %}">Download CSV</a>
+      </div>
+    </div>
+
+    <form method="get" class="filter-form">
+      <div class="grid">
+        <div>
+          <label>License filter</label>
+          {{ filter_form.license_filter }}
+        </div>
+        <div>
+          <label>File extension</label>
+          {{ filter_form.file_extension_filter }}
+        </div>
+        <div>
+          <label>Min confidence</label>
+          {{ filter_form.min_confidence }}
+        </div>
+        <div>
+          <label>Sort by</label>
+          {{ filter_form.sort_by }}
+        </div>
+        <div>
+          <label>Order</label>
+          {{ filter_form.sort_order }}
+        </div>
+        <div class="align-end">
+          <button class="btn primary" type="submit">Apply</button>
+        </div>
+      </div>
+    </form>
+
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>File Path</th>
+            <th>License</th>
+            <th>Confidence</th>
+            <th>Size (KB)</th>
+            <th>Lines</th>
+            <th>Method</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in page_obj %}
+          <tr>
+            <td>{{ r.file_path }}</td>
+            <td>{{ r.detected_license|default:'—' }}</td>
+            <td>{% if r.confidence_percentage %}{{ r.confidence_percentage }}%{% else %}—{% endif %}</td>
+            <td>{{ r.file_size_kb }}</td>
+            <td>{{ r.line_count|default:'—' }}</td>
+            <td>{{ r.detection_method }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6">No results yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination">
+      {% if page_obj.has_previous %}
+        <a class="btn" href="?page={{ page_obj.previous_page_number }}">Prev</a>
+      {% endif %}
+      <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a class="btn" href="?page={{ page_obj.next_page_number }}">Next</a>
+      {% endif %}
+    </div>
+  </section>
+
+  <script>
+    const statusEl = document.getElementById('status');
+    {% if upload.status != 'completed' and upload.status != 'failed' %}
+    const poll = async () => {
+      try {
+        const res = await fetch("{% url 'scanner:upload_status' upload.id %}");
+        const data = await res.json();
+        statusEl.textContent = data.status;
+        if (data.status === 'completed' || data.status === 'failed') {
+          window.location.reload();
+        } else {
+          setTimeout(poll, 2000);
+        }
+      } catch (e) { setTimeout(poll, 4000); }
+    };
+    poll();
+    {% endif %}
+  </script>
+{% endblock %}

@@ -1,0 +1,40 @@
+﻿/* Base layout */
+:root { --bg:#0f172a; --panel:#111827; --text:#e5e7eb; --muted:#94a3b8; --primary:#22c55e; --border:#1f2937; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; background:var(--bg); color:var(--text); }
+.container { width: min(1100px, 92%); margin: 0 auto; }
+.site-header { border-bottom:1px solid var(--border); background:rgba(17,24,39,.7); backdrop-filter: blur(6px); }
+.site-header .brand { margin:0; font-size: 20px; }
+.site-header a { color: var(--text); text-decoration:none; margin-right:14px; }
+.site-header .container { display:flex; align-items:center; justify-content:space-between; padding:14px 0; }
+.site-footer { border-top:1px solid var(--border); margin-top:40px; padding:20px 0; color:var(--muted); }
+
+/* Cards & tables */
+.card { background: var(--panel); border:1px solid var(--border); border-radius:10px; padding:18px; margin:18px 0; }
+.table { width:100%; border-collapse: collapse; }
+.table th, .table td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--border); }
+.table thead th { color: var(--muted); font-weight:600; font-size:14px; }
+.table-responsive { overflow:auto; }
+
+/* Forms */
+.upload-form .form-row { margin-bottom:14px; display:flex; flex-direction:column; }
+.form-control, .form-select, input[type="file"], input[type="text"], input[type="number"] { 
+  padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:#0b1220; color:var(--text);
+}
+.help { color: var(--muted); }
+.error { color:#fca5a5; margin-top:6px; }
+.filter-form .grid { display:grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap:12px; }
+.align-end { display:flex; align-items:end; }
+
+/* Buttons */
+.btn { display:inline-block; padding:9px 14px; border-radius:8px; border:1px solid var(--border); color:var(--text); text-decoration:none; }
+.btn.primary { background: var(--primary); color:#052e16; border-color:#16a34a; font-weight:600; }
+
+/* Messages */
+.messages { list-style:none; padding:0; margin:0 0 12px 0; }
+.messages li { padding:10px 12px; border-radius:8px; margin:8px 0; background:#0b1220; border:1px solid var(--border); }
+.messages li.success { border-color:#166534; }
+.messages li.error { border-color:#7f1d1d; }
+
+/* Report header */
+.report-header { display:flex; align-items:center; justify-content:space-between; gap:16px; }

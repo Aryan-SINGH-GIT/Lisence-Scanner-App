@@ -1,0 +1,29 @@
+﻿{% extends 'scanner/base.html' %}
+{% block title %}License Info{% endblock %}
+{% block content %}
+<section class="card">
+  <h2>Common Licenses</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>SPDX</th>
+        <th>OSI</th>
+        <th>FSF</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for l in licenses %}
+      <tr>
+        <td>{{ l.full_name }}</td>
+        <td>{{ l.spdx_identifier|default:'—' }}</td>
+        <td>{{ l.is_osi_approved|yesno:"Yes,No" }}</td>
+        <td>{{ l.is_fsf_approved|yesno:"Yes,No" }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4">No license metadata loaded yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}
